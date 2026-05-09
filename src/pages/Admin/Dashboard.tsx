@@ -6,12 +6,12 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated) navigate('/admin/login');
-  }, [isAuthenticated, navigate]);
+    if (!loading && !isAuthenticated) navigate('/admin/login');
+  }, [isAuthenticated, loading, navigate]);
 
   const stats = [
     { label: 'Total Revenue', value: '৳45,200', icon: DollarSign, color: 'bg-green-500', trend: '+12%' },

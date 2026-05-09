@@ -5,12 +5,15 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  isAdmin: boolean;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('admin_token'));
+  const [loading, setLoading] = useState(false);
 
   const login = (newToken: string) => {
     setToken(newToken);
@@ -23,7 +26,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ 
+      token, 
+      login, 
+      logout, 
+      isAuthenticated: !!token, 
+      isAdmin: !!token, // In this simple version, token means admin
+      loading 
+    }}>
       {children}
     </AuthContext.Provider>
   );

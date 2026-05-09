@@ -139,7 +139,10 @@ app.get("/api/products", (req, res) => {
   res.json(products.map((p: any) => ({
     ...p,
     gallery: JSON.parse(p.gallery || "[]"),
-    variants: JSON.parse(p.variants || "[]")
+    variants: JSON.parse(p.variants || "[]"),
+    is_featured: !!p.is_featured,
+    is_best_seller: !!p.is_best_seller,
+    is_flash_sale: !!p.is_flash_sale
   })));
 });
 

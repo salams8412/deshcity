@@ -3,18 +3,24 @@ import AdminSidebar from '../../components/admin/AdminSidebar';
 import { Plus, Search, Filter, Edit, Trash2, MoreVertical, X, Upload } from 'lucide-react';
 import { Product } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { token } = useAuth();
+  const { token, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data));
-  }, []);
+    if (!loading && !isAuthenticated) navigate('/admin/login');
+    
+    if (isAuthenticated) {
+      fetch('/api/products')
+        .then(res => res.json())
+        .then(data => setProducts(data));
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   return (
     <div className="flex bg-gray-50 min-h-screen">

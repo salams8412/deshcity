@@ -3,19 +3,25 @@ import AdminSidebar from '../../components/admin/AdminSidebar';
 import { Search, Filter, Eye, CheckCircle, Truck, XCircle, Clock, Download } from 'lucide-react';
 import { Order } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
-  const { token } = useAuth();
+  const { token, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('/api/orders', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setOrders(data));
-  }, [token]);
+    if (!loading && !isAuthenticated) navigate('/admin/login');
+    
+    if (isAuthenticated) {
+      fetch('/api/orders', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setOrders(data));
+    }
+  }, [isAuthenticated, loading, navigate, token]);
 
   const updateStatus = async (id: string, status: string) => {
     try {
